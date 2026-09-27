@@ -1,91 +1,78 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const PlanContext = createContext();
 
-export const PlanProvider = ({ children }) => {
-  const [savedWorkouts, setSavedWorkouts] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+export function PlanProvider({ children }) {
+  const [plan, setPlan] = useState([]);
+  const [saved, setSaved] = useState([]);
+  const [toastMessage, setToastMessage] = useState('');
 
-  // LocalStorage থেকে প্ল্যান ডাটা লোড করা
+  // localStorage থেকে ডাটা লোড করা
   useEffect(() => {
-    try {
-      const localData = localStorage.getItem('fitlog_my_plan');
-      if (localData) {
-        setSavedWorkouts(JSON.parse(localData));
-      }
-    } catch (error) {
-      console.error('Failed to parse saved plan:', error);
-    } finally {
-      setIsLoaded(true);
-    }
+    const storedPlan = localStorage.getItem('fitlog_plan');
+    const storedSaved = localStorage.getItem('fitlog_saved');
+    if (storedPlan) setPlan(JSON.parse(storedPlan));
+    if (storedSaved) setSaved(JSON.parse(storedSaved));
   }, []);
 
-  // LocalStorage-এ ডাটা সেভ করা
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('fitlog_my_plan', JSON.stringify(savedWorkouts));
-    }
-  }, [savedWorkouts, isLoaded]);
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
+  };
 
-  // প্ল্যানে ওয়ার্কআউট যোগ করা
+  // Plan-এ যুক্ত করার লজিক
   const addToPlan = (workout) => {
-    const exists = savedWorkouts.some((item) => item.id === workout.id);
+    const exists = plan.some((item) => (item.id || item._id) === (workout.id || workout._id));
     if (exists) {
-      toast.warn('This workout is already in your plan!', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
-      return false;
+      showToast('⚠️ Already added to Today\'s Plan!');
+      return;
     }
-
-    setSavedWorkouts((prev) => [...prev, workout]);
-    toast.success('Added to your Workout Plan!', {
-      position: 'top-right',
-      autoClose: 3000,
-    });
-    return true;
+    const updated = [...plan, workout];
+    setPlan(updated);
+    localStorage.setItem('fitlog_plan', JSON.stringify(updated));
+    showToast('✅ Added to Today\'s Plan!');
   };
 
-  // প্ল্যান থেকে ওয়ার্কআউট রিমুভ করা
-  const removeFromPlan = (id) => {
-    setSavedWorkouts((prev) => prev.filter((item) => item.id !== id));
-    toast.error('Removed from your Workout Plan!', {
-      position: 'top-right',
-      autoClose: 3000,
-    });
-  };
-
-  // প্ল্যান ক্লিয়ার করা
-  const clearPlan = () => {
-    setSavedWorkouts([]);
-    toast.info('Workout Plan cleared!', {
-      position: 'top-right',
-      autoClose: 3000,
-    });
+  // Saved-এ যুক্ত করার লজিক
+  const addToSaved = (workout) => {
+    const exists = saved.some((item) => (item.id || item._id) === (workout.id || workout._id));
+    if (exists) {
+      showToast('⚠️ Already Saved for later!');
+      return;
+    }
+    const updated = [...saved, workout];
+    setSaved(updated);
+    localStorage.setItem('fitlog_saved', JSON.stringify(updated));
+    showToast('🔖 Saved for later!');
   };
 
   return (
     <PlanContext.Provider
       value={{
-        savedWorkouts,
+        plan,
+        saved,
         addToPlan,
-        removeFromPlan,
-        clearPlan,
-        isLoaded,
+        addToSaved,
+        planCount: plan.length,
+        savedCount: saved.length,
       }}
     >
       {children}
+
+      {/* Toast Alert Message Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 bg-[#1a1d26] border border-[#c2f970] text-white text-xs sm:text-sm font-bold px-5 py-3 rounded-xl shadow-2xl z-50 animate-bounce">
+          {toastMessage}
+        </div>
+      )}
     </PlanContext.Provider>
   );
-};
+}
 
-export const usePlan = () => {
-  const context = useContext(PlanContext);
-  if (!context) {
-    throw new Error('usePlan must be used within a PlanProvider');
-  }
-  return context;
-};
+export function usePlan() {
+  return useContext(PlanContext);
+}
