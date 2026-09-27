@@ -1,6 +1,6 @@
 <div align="center">
 
-  # 🏋️‍♂️ FITLOG
+  # FITLOG
 
   **Your Ultimate Personal Workout Companion & Daily Fitness Planner**
 
