@@ -1,24 +1,24 @@
 import './globals.css';
-import { PlanProvider } from '@/context/PlanContext';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+import { PlanProvider } from '@/context/PlanContext'; 
+
 export const metadata = {
-  title: 'Fit Log - Track Your Workouts',
-  description: 'Log and organize your workout plans effortlessly.',
+  title: 'FitLog - Gym Companion',
+  description: 'Train with intent. Log every set.',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+      <body className="bg-[#0b0c0e] text-white antialiased flex flex-col min-h-screen">
         <PlanProvider>
           <Navbar />
-          <main className="flex-grow">{children}</main>
+          <div className="flex-grow">
+            {children}
+          </div>
           <Footer />
-          <ToastContainer position="top-right" autoClose={3000} />
         </PlanProvider>
       </body>
     </html>
