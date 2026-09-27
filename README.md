@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
 
-## Getting Started
+  # 🏋️‍♂️ FITLOG
 
-First, run the development server:
+  **Your Ultimate Personal Workout Companion & Daily Fitness Planner**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+  [![Next.js](https://img.shields.io/badge/Next.js-14+-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+  [![React](https://img.shields.io/badge/React-18+-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+</div>
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📌 Overview
 
-## Learn More
+**FITLOG** is a feature-rich, high-performance web application designed to help users structure their daily workout routines seamlessly. Built with Next.js and Tailwind CSS, FITLOG provides an interactive platform to explore workout exercises, organize personalized training plans, and track daily fitness targets with real-time UI synchronization.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔥 Key Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **🏋️ Workout Exploration:** Browse through an extensive library of workouts with detailed instructions, required equipment, reps, sets, duration, and calorie metrics.
+- **⚡ Dynamic Plan Management:** Easily add exercises to **Today's Plan** or save them to **Saved Workouts** with instant real-time status updates.
+- **📊 Advanced Sorting & Filtering:** Sort workouts by **Duration**, **Calories**, or **Rating** to find the most suitable exercise for your schedule.
+- **🔢 Live Sync Badge Counters:** Navigation badges update in real-time as you add, remove, or bookmark exercises across pages without needing page refreshes.
+- **📌 Sticky & Responsive Navigation:** A clean dark-mode navbar that stays fixed at the top for intuitive navigation across mobile, tablet, and desktop devices.
+- **💡 State Persistence:** Built-in local state synchronization ensures your planned and saved workouts remain saved even after refreshing the browser.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Tech Stack & Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **UI Library & Styling:** [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/)
+- **State Management:** React Context API (`FitLogContext`, `PlanContext`) & Browser `localStorage`
+- **Icons & Visuals:** Custom SVG Icons & Clean Visuals
+
+---
