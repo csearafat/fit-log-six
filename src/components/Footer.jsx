@@ -1,48 +1,31 @@
 import Link from 'next/link';
-import { Dumbbell, Globe, Share2, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-auto border-t border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          
-          {/* Col 1: Brand */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xl font-bold text-emerald-500">
-              <Dumbbell className="w-6 h-6" />
-              <span>FitLog</span>
-            </div>
-            <p className="text-sm text-gray-400">
-              Your ultimate workout companion. Track routines, save personalized plans, and achieve your fitness goals effectively.
-            </p>
+    <footer className="w-full bg-[#0b0c0e] border-t border-gray-800/60 py-6 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        {/* Left Side: Logo & Name */}
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="text-[#c2f970]">
+            <svg 
+              className="w-5 h-5" 
+              viewBox="0 0 24 24" 
+              fill="currentColor"
+            >
+              <path d="M6 5v14M18 5v14M3 8v8M21 8v8M6 12h12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
           </div>
+          <span className="font-black text-white text-base tracking-wider uppercase">
+            FITLOG
+          </span>
+        </Link>
 
-          {/* Col 2: Quick Links */}
-          <div>
-            <h3 className="text-white text-sm font-semibold mb-3">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/" className="hover:text-emerald-400 transition">Home</Link></li>
-              <li><Link href="/workouts" className="hover:text-emerald-400 transition">Workout Library</Link></li>
-              <li><Link href="/my-plan" className="hover:text-emerald-400 transition">My Saved Plan</Link></li>
-            </ul>
-          </div>
+        {/* Right Side: Copyright & Tagline */}
+        <p className="text-gray-400 text-xs sm:text-sm font-normal">
+          © 2026 FitLog — Workout Library. Train hard, log honest.
+        </p>
 
-          {/* Col 3: Social Links */}
-          <div>
-            <h3 className="text-white text-sm font-semibold mb-3">Connect With Us</h3>
-            <div className="flex items-center gap-4 text-gray-400">
-              <a href="#" className="hover:text-emerald-400 transition"><Globe className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-emerald-400 transition"><Share2 className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-emerald-400 transition"><Heart className="w-5 h-5" /></a>
-            </div>
-          </div>
-
-        </div>
-
-        <div className="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} FitLog. All rights reserved.
-        </div>
       </div>
     </footer>
   );
