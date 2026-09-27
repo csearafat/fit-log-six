@@ -1,82 +1,109 @@
-'use client';
-
 import Link from 'next/link';
-import { Flame, Clock, Plus, Check } from 'lucide-react';
-import { usePlan } from '@/context/PlanContext';
 
 export default function WorkoutCard({ workout }) {
-  const { savedWorkouts, addToPlan } = usePlan();
-  const isSaved = savedWorkouts.some((item) => item.id === workout.id);
+  if (!workout) return null;
+
+  // ID Handling
+  const workoutId = workout._id || workout.id;
+  const title = workout.title || workout.name || '';
+
+  
+  const getCategoryFromTitle = (name) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('bench press') || lowerName.includes('push-up') || lowerName.includes('chest')) return 'CHEST';
+    if (lowerName.includes('pull-up') || lowerName.includes('row') || lowerName.includes('lat') || lowerName.includes('back')) return 'BACK';
+    if (lowerName.includes('squat') || lowerName.includes('lunge') || lowerName.includes('leg') || lowerName.includes('calf')) return 'LEGS';
+    if (lowerName.includes('overhead press') || lowerName.includes('shoulder') || lowerName.includes('deltoid')) return 'SHOULDERS';
+    if (lowerName.includes('curl') || lowerName.includes('bicep') || lowerName.includes('tricep') || lowerName.includes('arm')) return 'ARMS';
+    if (lowerName.includes('plank') || lowerName.includes('twist') || lowerName.includes('abs') || lowerName.includes('core')) return 'CORE';
+    return null;
+  };
+
+  
+  const rawCategory = 
+    workout.category || 
+    workout.target || 
+    workout.muscleGroup || 
+    workout.muscle;
+
+  const categoryFromApi = typeof rawCategory === 'object' && rawCategory !== null
+    ? (rawCategory.name || rawCategory.title)
+    : rawCategory;
+
+  
+  const categoryName = 
+    (categoryFromApi && categoryFromApi.toUpperCase() !== 'FITNESS' ? categoryFromApi : null) || 
+    getCategoryFromTitle(title) || 
+    'FITNESS';
+
+  
+  const equipmentName = 
+    workout.equipment || 
+    (Array.isArray(workout.equipments) ? workout.equipments.join(', ') : 'Bodyweight');
+
+  
+  const durationValue = workout.duration || workout.time || '15';
+  const caloriesValue = workout.calories || workout.kcal || '180 kcal';
+  const ratingValue = workout.rating || '4.8';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col group">
-      {/* Image Container */}
-      <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
-        <img
-          src={workout.image || workout.thumbnail || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop'}
-          alt={workout.name || workout.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-        />
-        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
-          {workout.category || workout.difficulty || 'General'}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-grow space-y-4">
-        <div>
-          <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition line-clamp-1">
-            {workout.name || workout.title}
-          </h3>
-          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-            {workout.description || 'A complete target exercise designed to keep you fit and healthy.'}
-          </p>
+    <Link href={`/workouts/${workoutId}`} className="group block h-full">
+      <div className="bg-[#12141a] border border-gray-800/80 rounded-2xl overflow-hidden hover:border-gray-700 transition-all duration-300 flex flex-col h-full p-1.5">
+        
+        {/* Compact & Fixed Height Image Box */}
+        <div className="w-full h-36 sm:h-40 overflow-hidden rounded-xl bg-[#0b0c0e]">
+          <img
+            src={workout.image || workout.imageUrl || '/placeholder.png'}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-xl"
+          />
         </div>
 
-        {/* Info Badges */}
-        <div className="flex items-center gap-4 text-xs font-medium text-gray-600 border-t border-gray-100 pt-3">
-          <div className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-emerald-500" />
-            <span>{workout.duration || '20 min'}</span>
+        {/* Card Body */}
+        <div className="p-3 flex flex-col justify-between flex-grow">
+          <div>
+            {/* Dynamic Category Tag */}
+            <div className="mb-2">
+              <span className="bg-[#c2f970] text-black text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded inline-block">
+                {categoryName}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-sm font-extrabold text-white uppercase tracking-tight group-hover:text-[#c2f970] transition-colors line-clamp-1 mb-0.5">
+              {title}
+            </h3>
+
+            {/* Equipment Subtitle */}
+            <p className="text-xs text-gray-400 font-medium line-clamp-1 mb-3">
+              {equipmentName}
+            </p>
           </div>
-          <div className="flex items-center gap-1">
-            <Flame className="w-3.5 h-3.5 text-amber-500" />
-            <span>{workout.calories || '150 kcal'}</span>
+
+          {/* Bottom Footer: পাশাপাশি টাইম, ক্যালোরি ও রেটিং */}
+          <div className="flex items-center justify-start gap-5 text-xs text-gray-400 pt-1">
+            {/* Time / Duration */}
+            <div className="flex items-center gap-1 text-[11px] font-medium text-gray-300">
+              <span className="text-gray-400 text-xs">⏱</span>
+              <span>{durationValue}</span>
+            </div>
+
+            {/* Calories */}
+            <div className="flex items-center gap-1 text-[11px] font-medium text-gray-300">
+              <span className="text-orange-500 text-xs">🔥</span>
+              <span>{caloriesValue}</span>
+            </div>
+
+            {/* Rating */}
+            <div className="flex items-center gap-1 text-[11px] font-bold text-white">
+              <span className="text-yellow-400 text-xs">★</span>
+              <span>{ratingValue}</span>
+            </div>
           </div>
+
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center gap-2 pt-2 mt-auto">
-          <Link
-            href={`/workouts/${workout.id}`}
-            className="flex-1 text-center bg-gray-100 text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 text-xs font-semibold py-2.5 px-3 rounded-xl transition"
-          >
-            Details
-          </Link>
-
-          <button
-            onClick={() => addToPlan(workout)}
-            disabled={isSaved}
-            className={`px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 transition ${
-              isSaved
-                ? 'bg-emerald-100 text-emerald-700 cursor-not-allowed'
-                : 'bg-emerald-600 text-white hover:bg-emerald-700'
-            }`}
-          >
-            {isSaved ? (
-              <>
-                <Check className="w-3.5 h-3.5" />
-                <span>Saved</span>
-              </>
-            ) : (
-              <>
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add</span>
-              </>
-            )}
-          </button>
-        </div>
       </div>
-    </div>
+    </Link>
   );
 }
