@@ -1,65 +1,100 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Dumbbell, Bookmark } from 'lucide-react';
-import { usePlan } from '@/context/PlanContext';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { savedWorkouts } = usePlan();
+  const [planCount, setPlanCount] = useState(0);
+  const [savedCount, setSavedCount] = useState(0);
 
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Workouts', path: '/workouts' },
-    { name: 'My Plan', path: '/my-plan' },
-  ];
+  const updateCounts = () => {
+    const storedPlans = JSON.parse(localStorage.getItem('my_plans') || '[]');
+    const storedSaved = JSON.parse(localStorage.getItem('my_saved') || '[]');
+    setPlanCount(storedPlans.length);
+    setSavedCount(storedSaved.length);
+  };
+
+  useEffect(() => {
+    updateCounts();
+
+    
+    window.addEventListener('storage_update', updateCounts);
+    window.addEventListener('storage', updateCounts);
+
+    return () => {
+      window.removeEventListener('storage_update', updateCounts);
+      window.removeEventListener('storage', updateCounts);
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    
+    <nav className="sticky top-0 z-50 w-full bg-[#0b0c0e]/95 backdrop-blur-md border-b border-gray-800/60 py-3">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold text-emerald-600 hover:opacity-90 transition">
-          <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
-            <Dumbbell className="w-6 h-6" />
-          </div>
-          <span>Fit<span className="text-gray-800">Log</span></span>
+        <Link href="/" className="flex items-center gap-2.5">
+          <img
+            src="/logo.png"
+            alt="FITLOG Logo"
+            className="h-7 w-auto object-contain"
+          />
+          <span className="text-white font-black tracking-wider text-xl uppercase font-sans">
+            FITLOG
+          </span>
         </Link>
 
-        {/* Navigation Links */}
-        <nav className="flex items-center gap-6">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.path;
-            return (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={`text-sm font-medium transition-colors hover:text-emerald-600 ${
-                  isActive ? 'text-emerald-600 font-semibold' : 'text-gray-600'
-                }`}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Middle Navigation */}
+        <div className="flex items-center gap-1 bg-[#12141a] p-1 rounded-full border border-gray-800">
+          <Link
+            href="/"
+            className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${
+              pathname === '/' || pathname === '/workouts'
+                ? 'bg-[#c2f970] text-black'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            Workouts
+          </Link>
 
-        {/* Action Button / Plan Badge */}
-        <div className="flex items-center gap-3">
           <Link
             href="/my-plan"
-            className="flex items-center gap-2 bg-emerald-600 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-emerald-700 transition shadow-sm"
+            className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${
+              pathname === '/my-plan'
+                ? 'bg-[#c2f970] text-black'
+                : 'text-gray-400 hover:text-white'
+            }`}
           >
-            <Bookmark className="w-4 h-4" />
+            My Plan
+          </Link>
+        </div>
+
+        {/* Dynamic Count Badges */}
+        <div className="flex items-center gap-2 bg-[#12141a] p-1.5 rounded-full border border-gray-800/80">
+          <Link
+            href="/my-plan?tab=plan"
+            className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-gray-300 hover:text-white transition-all"
+          >
             <span>Plan</span>
-            <span className="bg-emerald-800 text-emerald-100 text-xs px-2 py-0.5 rounded-full font-bold">
-              {savedWorkouts.length}
+            <span className="bg-[#c2f970] text-black text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center">
+              {planCount}
+            </span>
+          </Link>
+
+          <Link
+            href="/my-plan?tab=saved"
+            className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-gray-300 hover:text-white transition-all"
+          >
+            <span>Saved</span>
+            <span className="bg-[#c2f970] text-black text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center">
+              {savedCount}
             </span>
           </Link>
         </div>
 
       </div>
-    </header>
+    </nav>
   );
 }
